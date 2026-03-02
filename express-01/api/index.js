@@ -10,3 +10,5 @@ app.get('/hello_world', (req, res) => {
 app.listen(3000, () =>
   console.log('Example app listening on port 3000!\n' + process.env.MESSAGE),
 );
+
+export default app;
