@@ -1,0 +1,23 @@
+{
+  "name": "meu-app-express",
+  "version": "1.0.0",
+  "description": "Aplicativo Express mínimo com endpoints para Vercel",
+  "main": "api/index.js",
+  "scripts": {
+    "start": "nodemon --exec babel-node api/index.js"
+  },
+  "keywords": [
+    "express",
+    "vercel"
+  ],
+  "author": "Iwerson Guilherme",
+  "license": "MIT",
+  "type": "commonjs",
+  "dependencies": {
+    "@babel/core": "^7.29.0",
+    "@babel/node": "^7.29.0",
+    "@babel/preset-env": "^7.29.0",
+    "express": "^5.2.1",
+    "nodemon": "^3.1.12"
+  }
+}
