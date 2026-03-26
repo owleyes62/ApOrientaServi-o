@@ -2,7 +2,6 @@ import { Router } from "express";
 
 const router = Router();
 
-// GET all users
 router.get("/", async (req, res) => {
   try {
     const users = await req.context.models.User.findAll();
@@ -12,7 +11,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET user by id
+
 router.get("/:userId", async (req, res) => {
   try {
     const user = await req.context.models.User.findByPk(req.params.userId);
@@ -27,11 +26,12 @@ router.get("/:userId", async (req, res) => {
   }
 });
 
-// CREATE user
+
 router.post("/", async (req, res) => {
   try {
     const user = await req.context.models.User.create({
       username: req.body.username,
+      email: req.body.email,
     });
 
     return res.status(201).json(user);
@@ -40,7 +40,6 @@ router.post("/", async (req, res) => {
   }
 });
 
-// UPDATE user
 router.put("/:userId", async (req, res) => {
   try {
     const user = await req.context.models.User.findByPk(req.params.userId);
@@ -51,6 +50,7 @@ router.put("/:userId", async (req, res) => {
 
     await user.update({
       username: req.body.username,
+      email: req.body.email,
     });
 
     return res.status(200).json(user);
@@ -59,7 +59,6 @@ router.put("/:userId", async (req, res) => {
   }
 });
 
-// DELETE user
 router.delete("/:userId", async (req, res) => {
   try {
     const user = await req.context.models.User.findByPk(req.params.userId);

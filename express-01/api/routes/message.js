@@ -29,12 +29,20 @@ router.get("/:messageId", async (req, res) => {
   }
 });
 
-// CREATE message
 router.post("/", async (req, res) => {
   try {
+    const { text, userId } = req.body;
+
+    // Verifica se o usuário existe
+    const user = await req.context.models.User.findByPk(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     const message = await req.context.models.Message.create({
-      text: req.body.text,
-      userId: req.context.me.id, // usuário logado fixo no contexto
+      text,
+      userId,
     });
 
     return res.status(201).json(message);
@@ -43,9 +51,10 @@ router.post("/", async (req, res) => {
   }
 });
 
-// UPDATE message
 router.put("/:messageId", async (req, res) => {
   try {
+    const { text, userId } = req.body;
+
     const message = await req.context.models.Message.findByPk(
       req.params.messageId
     );
@@ -54,9 +63,22 @@ router.put("/:messageId", async (req, res) => {
       return res.status(404).json({ message: "Message not found" });
     }
 
-    await message.update({
-      text: req.body.text,
-    });
+    // Se quiser permitir alterar o userId, validamos
+    if (userId) {
+      const user = await req.context.models.User.findByPk(userId);
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      message.userId = userId;
+    }
+
+    if (text) {
+      message.text = text;
+    }
+
+    await message.save();
 
     return res.status(200).json(message);
   } catch (error) {
