@@ -4,6 +4,7 @@ import express from "express";
 
 import models, { sequelize } from "./models";
 import routes from "./routes";
+import components from "./components";
 
 const app = express();
 app.set("trust proxy", true);
@@ -22,10 +23,22 @@ app.use((req, res, next) => {
   next();
 });
 
+
+// Visual improvisado para mostrar as rotas disponíveis na raiz do servidor
+app.get("/", (req, res) => {
+  const html = components.buildHomePage(components.routesInfo);
+  res.send(html);
+});
+app.get("/", (req, res) => {
+  res.json(components.routesInfo);
+});
+
+// Rotas da API
 app.use("/session", routes.session);
 app.use("/users", routes.user);
 app.use("/messages", routes.message);
 
+// Rota de teste para verificar se o servidor está rodando e mostrar a variável de ambiente
 app.get("/", (req, res) => {
   res.send(
     "Received a GET HTTP method\nServidor rodando!\n" + process.env.MESSAGE,
