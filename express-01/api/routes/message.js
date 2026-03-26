@@ -2,7 +2,7 @@ import { Router } from "express";
 
 const router = Router();
 
-// GET all messages
+
 router.get("/", async (req, res) => {
   try {
     const messages = await req.context.models.Message.findAll();
@@ -12,7 +12,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET message by id
+
 router.get("/:messageId", async (req, res) => {
   try {
     const message = await req.context.models.Message.findByPk(
@@ -86,7 +86,7 @@ router.put("/:messageId", async (req, res) => {
   }
 });
 
-// DELETE message
+
 router.delete("/:messageId", async (req, res) => {
   try {
     const message = await req.context.models.Message.findByPk(
