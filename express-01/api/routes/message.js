@@ -20,7 +20,7 @@ router.get("/:messageId", async (req, res) => {
     );
 
     if (!message) {
-      return res.status(404).json({ message: "Message not found" });
+      return res.status(404).json({ message: "Mensagem não encontrada" });
     }
 
     return res.status(200).json(message);
@@ -37,7 +37,7 @@ router.post("/", async (req, res) => {
     const user = await req.context.models.User.findByPk(userId);
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "Usuário não encontrado" });
     }
 
     const message = await req.context.models.Message.create({
@@ -60,7 +60,7 @@ router.put("/:messageId", async (req, res) => {
     );
 
     if (!message) {
-      return res.status(404).json({ message: "Message not found" });
+      return res.status(404).json({ message: "Mensagem não encontrada" });
     }
 
     // Se quiser permitir alterar o userId, validamos
@@ -68,7 +68,7 @@ router.put("/:messageId", async (req, res) => {
       const user = await req.context.models.User.findByPk(userId);
 
       if (!user) {
-        return res.status(404).json({ message: "User not found" });
+        return res.status(404).json({ message: "Usuário não encontrado" });
       }
 
       message.userId = userId;
@@ -94,12 +94,12 @@ router.delete("/:messageId", async (req, res) => {
     );
 
     if (!message) {
-      return res.status(404).json({ message: "Message not found" });
+      return res.status(404).json({ message: "Mensagem não encontrada" });
     }
 
     await message.destroy();
 
-    return res.status(200).json({ message: "Message deleted successfully" });
+    return res.status(200).json({ message: "Mensagem deletada com sucesso" });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

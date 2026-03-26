@@ -17,7 +17,7 @@ router.get("/:userId", async (req, res) => {
     const user = await req.context.models.User.findByPk(req.params.userId);
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "Usuário não encontrado" });
     }
 
     return res.status(200).json(user);
@@ -45,7 +45,7 @@ router.put("/:userId", async (req, res) => {
     const user = await req.context.models.User.findByPk(req.params.userId);
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "Usuário não encontrado" });
     }
 
     await user.update({
@@ -64,12 +64,12 @@ router.delete("/:userId", async (req, res) => {
     const user = await req.context.models.User.findByPk(req.params.userId);
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "Usuário não encontrado" });
     }
 
     await user.destroy();
 
-    return res.status(200).json({ message: "User deleted successfully" });
+    return res.status(200).json({ message: "Usuário deletado com sucesso" });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
