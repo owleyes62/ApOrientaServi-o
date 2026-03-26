@@ -1,5 +1,5 @@
 const buildHomePage = (routesInfo) => {
-  const { routes } = routesInfo;
+  const { endpoints } = routesInfo;
 
   return `
     <html>
@@ -30,23 +30,42 @@ const buildHomePage = (routesInfo) => {
       <body>
         <h1>🚀 API Express - Rotas Disponíveis</h1>
 
-        ${Object.entries(routes)
-          .map(([group, endpoints]) => `
-            <div class="section">
-              <h2>${group.toUpperCase()}</h2>
-              ${endpoints
-                .map(route => {
-                  const [method, path] = route.split(" ");
-                  return `
-                    <div class="route">
-                      <span class="${method}">${method}</span> ${path}
-                    </div>
-                  `;
-                })
-                .join("")}
-            </div>
-          `)
-          .join("")}
+${Object.entries(endpoints)
+  .map(([groupName, groupData]) => `
+    <div class="section">
+      <h2>${groupName.toUpperCase()}</h2>
+      <p>${groupData.description || ""}</p>
+
+      ${groupData.routes
+        .map(route => `
+          <div class="route">
+            <span class="${route.method}">${route.method}</span> ${route.path}
+            <br/>
+            <small>${route.description}</small>
+
+            ${
+              route.bodyExample
+                ? `
+                  <div style="margin-top:8px;">
+                    <small><strong>Exemplo de envio (JSON):</strong></small>
+                    <pre style="
+                      background:#f0f0f0;
+                      padding:8px;
+                      border-radius:6px;
+                      font-family:monospace;
+                    ">
+${JSON.stringify(route.bodyExample, null, 2)}
+                    </pre>
+                  </div>
+                `
+                : ""
+            }
+          </div>
+        `)
+        .join("")}
+    </div>
+  `)
+  .join("")}
       </body>
     </html>
   `;
