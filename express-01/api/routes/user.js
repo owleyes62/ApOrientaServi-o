@@ -34,6 +34,13 @@ router.post("/", async (req, res) => {
       email: req.body.email,
     });
 
+    if(email) {
+      const existingUser = await req.context.models.User.findOne({ where: { email: req.body.email } });
+      if (existingUser) {
+        return res.status(400).json({ message: "Email já em uso" });
+      }
+    }
+
     return res.status(201).json(user);
   } catch (error) {
     return res.status(500).json({ error: error.message });

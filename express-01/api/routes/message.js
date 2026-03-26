@@ -2,6 +2,13 @@ import { Router } from "express";
 
 const router = Router();
 
+//400 - Bad Request
+//404 - Not Found
+//409 - Conflict
+//500 - Internal Server Error
+//200 - OK
+//201 - Created
+
 
 router.get("/", async (req, res) => {
   try {
