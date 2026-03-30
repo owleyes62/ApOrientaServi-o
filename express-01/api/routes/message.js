@@ -10,17 +10,17 @@ const router = Router();
 //201 - Created
 
 
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
   try {
     const messages = await req.context.models.Message.findAll();
     return res.status(200).json(messages);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 
 
-router.get("/:messageId", async (req, res) => {
+router.get("/:messageId", async (req, res, next) => {
   try {
     const message = await req.context.models.Message.findByPk(
       req.params.messageId
@@ -32,11 +32,11 @@ router.get("/:messageId", async (req, res) => {
 
     return res.status(200).json(message);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", async (req, res, next  ) => {
   try {
     const { text, userId } = req.body;
 
@@ -54,11 +54,11 @@ router.post("/", async (req, res) => {
 
     return res.status(201).json(message);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 
-router.put("/:messageId", async (req, res) => {
+router.put("/:messageId", async (req, res, next) => {
   try {
     const { text, userId } = req.body;
 
@@ -89,12 +89,12 @@ router.put("/:messageId", async (req, res) => {
 
     return res.status(200).json(message);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 
 
-router.delete("/:messageId", async (req, res) => {
+router.delete("/:messageId", async (req, res, next) => {
   try {
     const message = await req.context.models.Message.findByPk(
       req.params.messageId
@@ -108,7 +108,7 @@ router.delete("/:messageId", async (req, res) => {
 
     return res.status(200).json({ message: "Mensagem deletada com sucesso" });
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 

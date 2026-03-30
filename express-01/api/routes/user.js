@@ -2,17 +2,17 @@ import { Router } from "express";
 
 const router = Router();
 
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
   try {
     const users = await req.context.models.User.findAll();
     return res.status(200).json(users);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    next(error); // Passa o erro para o middleware de tratamento de erros
   }
 });
 
 
-router.get("/:userId", async (req, res) => {
+router.get("/:userId", async (req, res, next) => {
   try {
     const user = await req.context.models.User.findByPk(req.params.userId);
 
@@ -22,12 +22,12 @@ router.get("/:userId", async (req, res) => {
 
     return res.status(200).json(user);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    next(error); 
   }
 });
 
 
-router.post("/", async (req, res) => {
+router.post("/", async (req, res, next) => {
   try {
     const user = await req.context.models.User.create({
       username: req.body.username,
@@ -37,17 +37,19 @@ router.post("/", async (req, res) => {
     if(email) {
       const existingUser = await req.context.models.User.findOne({ where: { email: req.body.email } });
       if (existingUser) {
-        return res.status(400).json({ message: "Email já em uso" });
+        next({ status: 409, message: "Email já em uso" });
+        return;
       }
     }
 
     return res.status(201).json(user);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    console.log("ERRO: 500", error);
+    next(error);
   }
 });
 
-router.put("/:userId", async (req, res) => {
+router.put("/:userId", async (req, res, next) => {
   try {
     const user = await req.context.models.User.findByPk(req.params.userId);
 
@@ -62,11 +64,11 @@ router.put("/:userId", async (req, res) => {
 
     return res.status(200).json(user);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 
-router.delete("/:userId", async (req, res) => {
+router.delete("/:userId", async (req, res, next) => {
   try {
     const user = await req.context.models.User.findByPk(req.params.userId);
 
@@ -78,7 +80,7 @@ router.delete("/:userId", async (req, res) => {
 
     return res.status(200).json({ message: "Usuário deletado com sucesso" });
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 
