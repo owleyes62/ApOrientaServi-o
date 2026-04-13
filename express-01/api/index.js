@@ -1,7 +1,6 @@
 import "dotenv/config";
 import cors from "cors";
 import express from "express";
-
 import models, { sequelize } from "./models";
 import routes from "./routes";
 import components from "./components";
@@ -12,6 +11,7 @@ app.set("trust proxy", true);
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 app.use(async (req, res, next) => {
   req.context = {
     models,
@@ -25,27 +25,17 @@ app.use((req, res, next) => {
   next();
 });
 
-
-// Visual improvisado para mostrar as rotas disponíveis na raiz do servidor
 app.get("/", (req, res) => {
   const html = components.buildHomePage(components.routesInfo);
   res.send(html);
-});
-app.get("/", (req, res) => {
-  res.json(components.routesInfo);
 });
 
 // Rotas da API
 app.use("/session", routes.session);
 app.use("/users", routes.user);
 app.use("/messages", routes.message);
+app.use("/tarefas", routes.tarefa);
 
-// Rota de teste para verificar se o servidor está rodando e mostrar a variável de ambiente
-app.get("/", (req, res) => {
-  res.send(
-    "Received a GET HTTP method\nServidor rodando!\n" + process.env.MESSAGE,
-  );
-});
 app.use(errorHandler);
 
 const port = process.env.PORT ?? 3000;
@@ -55,7 +45,6 @@ sequelize.sync({ force: eraseDatabaseOnSync }).then(async () => {
   if (eraseDatabaseOnSync) {
     createUsersWithMessages();
   }
-
   app.listen(port, () =>
     console.log(
       "Express-01 app listening on port " + port + "!\n" + process.env.MESSAGE,
@@ -78,7 +67,6 @@ const createUsersWithMessages = async () => {
       include: [models.Message],
     },
   );
-
   await models.User.create(
     {
       username: "ddavids",
