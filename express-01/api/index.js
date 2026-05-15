@@ -5,6 +5,7 @@ import models, { sequelize } from "./models";
 import routes from "./routes";
 import components from "./components";
 import { errorHandler } from "./middleware";
+import { authMiddleware, protectRoutes } from "./middleware/authMiddleware";
 
 const app = express();
 app.set("trust proxy", true);
@@ -12,14 +13,16 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(async (req, res, next) => {
+// 1. Contexto base (sem usuário fixo)
+app.use((req, res, next) => {
   req.context = {
     models,
-    me: await models.User.findByLogin("rwieruch"),
   };
   next();
 });
 
+app.use(authMiddleware);
+app.use(protectRoutes);
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.path} - ${req.ip}`);
   next();
@@ -43,12 +46,12 @@ const eraseDatabaseOnSync = process.env.ERASE_DATABASE_ON_SYNC === "true";
 
 sequelize.sync({ force: eraseDatabaseOnSync }).then(async () => {
   if (eraseDatabaseOnSync) {
-    createUsersWithMessages();
+    await createUsersWithMessages();
   }
   app.listen(port, () =>
     console.log(
-      "Express-01 app listening on port " + port + "!\n" + process.env.MESSAGE,
-    ),
+      "Express-01 app listening on port " + port + "!\n" + process.env.MESSAGE
+    )
   );
 });
 
@@ -57,6 +60,7 @@ const createUsersWithMessages = async () => {
     {
       username: "rwieruch",
       email: "rwieruch@email.com",
+      password: "password123", 
       messages: [
         {
           text: "Published the Road to learn React",
@@ -65,12 +69,14 @@ const createUsersWithMessages = async () => {
     },
     {
       include: [models.Message],
-    },
+    }
   );
+
   await models.User.create(
     {
       username: "ddavids",
       email: "ddavids@email.com",
+      password: "password123",
       messages: [
         {
           text: "Happy to release ...",
@@ -82,7 +88,7 @@ const createUsersWithMessages = async () => {
     },
     {
       include: [models.Message],
-    },
+    }
   );
 };
 

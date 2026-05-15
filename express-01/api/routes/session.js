@@ -1,10 +1,11 @@
 import { Router } from "express";
+import sessionController from "../controllers/sessionController";
 
 const router = Router();
 
-router.get("/", async (req, res) => {
-  const user = await req.context.models.User.findByPk(req.context.me.id);
-  return res.send(user);
-});
+router.get("/", sessionController.getSession);
+router.post("/", sessionController.loginSession);
+router.delete("/", sessionController.logoutSession);
+router.post("/refresh", sessionController.refreshSession);
 
 export default router;

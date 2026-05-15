@@ -20,7 +20,7 @@ const buscarMessagePorId = async (req, res, next) => {
 
 const criarMessage = async (req, res, next) => {
   try {
-    const message = await messageService.criarMessage(req.body);
+    const message = await messageService.criarMessage({ ...req.body, userId: req.context.me.id });
     return res.status(201).json(message);
   } catch (error) {
     next(error);
